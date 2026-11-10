@@ -85,6 +85,23 @@ final class CalculadoraPronosticos
     }
 
     /**
+     * @param list<int|float> $serie
+     */
+    public function suavizacionExponencial(array $serie, float $alfa): float
+    {
+        if ($alfa < 0 || $alfa > 1) {
+            throw new InvalidArgumentException('Alfa debe estar entre 0 y 1');
+        }
+
+        $pronostico = (float) $serie[0];
+        foreach (array_slice($serie, 1) as $valor) {
+            $pronostico = $pronostico + $alfa * ($valor - $pronostico);
+        }
+
+        return $pronostico;
+    }
+
+    /**
      * Indica si un error de pronóstico debe disparar una alerta.
      *
      * Regla acordada con Producción: la alerta se activa cuando el error es mayor
