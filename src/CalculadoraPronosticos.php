@@ -85,6 +85,12 @@ final class CalculadoraPronosticos
     }
 
     /**
+     * Pronostica el siguiente periodo con suavización exponencial simple.
+     *
+     * F(t+1) = F(t) + alfa * (D(t) - F(t)), empezando con F(2) = D(1): el primer
+     * pronóstico es igual a la primera demanda real, porque todavía no hay un
+     * pronóstico anterior del cual partir.
+     *
      * @param list<int|float> $serie
      */
     public function suavizacionExponencial(array $serie, float $alfa): float
@@ -94,8 +100,8 @@ final class CalculadoraPronosticos
         }
 
         $pronostico = (float) $serie[0];
-        foreach (array_slice($serie, 1) as $valor) {
-            $pronostico = $pronostico + $alfa * ($valor - $pronostico);
+        foreach (array_slice($serie, 1) as $demandaReal) {
+            $pronostico += $alfa * ($demandaReal - $pronostico);
         }
 
         return $pronostico;
